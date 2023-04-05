@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func validate(token string) error {
 
 }
 
-func authorization(c *gin.Context) {
+func Authorization(c *gin.Context) {
 	s := c.Request.Header.Get("Authorization")
 
 	token := strings.TrimPrefix(s, "Bearer ")
@@ -34,7 +34,7 @@ func authorization(c *gin.Context) {
 
 }
 
-func loginHandler(c *gin.Context) {
+func LoginHandler(c *gin.Context) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),

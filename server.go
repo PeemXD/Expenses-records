@@ -1,6 +1,10 @@
 package main
 
 import (
+	"log"
+	"os"
+
+	"github.com/PeemXD/expenses-gin/auth"
 	"github.com/PeemXD/expenses-gin/database"
 	"github.com/PeemXD/expenses-gin/handler"
 	"github.com/gin-gonic/gin"
@@ -12,17 +16,18 @@ func main() {
 	handler := handler.NewHandler(database.Db)
 	r := gin.New()
 
-	r.POST("/login", loginHandler)
+	r.POST("/login", auth.LoginHandler)
 
-	protected := r.Group("/", authorization)
+	protected := r.Group("/", auth.Authorization)
 
 	protected.POST("/expenses", handler.CreateExpensesHandler)
 
 	protected.GET("/expenses/:id", handler.GetsExpensesHandler)
 
-	protected.PUT("/expemse/:id", handler.EditExpensesHandler)
+	protected.PUT("/expenses/:id", handler.EditExpensesHandler)
 
 	protected.GET("/expenses", handler.GetExpensesHandler)
 
-	r.Run(":2565")
+	log.Fatal(r.Run(os.Getenv("PORT")))
+
 }
