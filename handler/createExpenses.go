@@ -10,7 +10,6 @@ import (
 
 func (h *Handler) CreateExpensesHandler(c *gin.Context) {
 	var expense model.Expenses
-	// var expenseForPg model.ExpensesForPg
 
 	if err := c.ShouldBindJSON(&expense); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
