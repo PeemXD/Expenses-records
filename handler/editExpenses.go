@@ -28,7 +28,7 @@ func (h *Handler) EditExpensesHandler(c *gin.Context) {
 		})
 	}
 
-	// check have id
+	// check id existed
 	if result := h.db.Raw("SELECT id FROM expenses WHERE id = ?", id); result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": result.Error.Error(),
