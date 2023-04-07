@@ -31,11 +31,11 @@ func main() {
 
 	protected.POST("/expenses", handler.CreateExpensesHandler)
 
-	protected.GET("/expenses/:id", handler.GetsExpensesHandler)
+	protected.GET("/expenses/:id", handler.GetExpensesHandler)
 
 	protected.PUT("/expenses/:id", handler.EditExpensesHandler)
 
-	protected.GET("/expenses", handler.GetExpensesHandler)
+	protected.GET("/expenses", handler.GetsExpensesHandler)
 
 	// log.Fatal(r.Run(os.Getenv("PORT"))) //if want to use graceful shutdown. it must use goroutine to run server
 	go func() {
