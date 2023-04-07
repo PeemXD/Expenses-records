@@ -5,7 +5,6 @@ import (
 
 	"github.com/PeemXD/expenses-gin/model"
 	"github.com/gin-gonic/gin"
-	"github.com/lib/pq"
 )
 
 func (h *Handler) CreateExpensesHandler(c *gin.Context) {
@@ -18,15 +17,9 @@ func (h *Handler) CreateExpensesHandler(c *gin.Context) {
 		return
 	}
 
-	tagsArray := pq.Array(expense.Tags)
-
-	if err := h.db.Raw(`
-		INSERT INTO expenses (title, amount, note, tags)
-		VALUES (?, ?, ?, ?)
-		RETURNING id`,
-		expense.Title, expense.Amount, expense.Note, tagsArray).Scan(&expense.ID).Error; err != nil {
+	if result := h.db.Create(&expense); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"error": result.Error.Error(),
 		})
 		return
 	}
