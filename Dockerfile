@@ -18,4 +18,8 @@ FROM alpine:3.16.2
 
 COPY --from=build-base /app/out/go-app /app/go-app
 
+# ENV DATABASE_URL="postgres://postgres:peem2544@localhost:5432/expenses"
+
+# ENV PORT=":2565"
+
 CMD ["/app/go-app"]

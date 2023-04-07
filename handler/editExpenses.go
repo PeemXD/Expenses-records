@@ -9,27 +9,32 @@ import (
 
 func (h *Handler) EditExpensesHandler(c *gin.Context) {
 
-	var expense model.Expenses
 	id := c.Param("id")
 
+	// check id existed
+	var existedExpense model.Expenses
+	if result := h.db.Where("id = ?", id).First(&existedExpense); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": result.Error.Error(),
+		})
+		return
+	}
+
+	var expense model.Expenses
 	if err := c.ShouldBindJSON(&expense); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-	}
-
-	// check id existed
-	if result := h.db.Raw("SELECT id FROM expenses WHERE id = ?", id); result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": result.Error.Error(),
-		})
+		return
 	}
 
 	// update base on primarykey
+	expense.ID = existedExpense.ID
 	if result := h.db.Save(&expense); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": result.Error.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, &expense)
