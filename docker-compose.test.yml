@@ -3,26 +3,59 @@ version: '3.2'
 networks:
   integration-test:
 
-
+    # services:
+    #   it_tests:
+    #     build:
+    #       context: .
+    #       dockerfile: ./Dockerfile.test
+    #     volumes:
+    #       - .:/go/src/target
+    #     depends_on:
+    #       - db
+    #     networks:
+    #       - integration-test
+    #   db:
+    #     image: postgres:12.12
+    #     environment:
+    #       POSTGRES_USER: root
+    #       POSTGRES_PASSWORD: root
+    #       POSTGRES_DB: go-example-db
+    #     restart: on-failure
+    #     volumes:
+    #       - ./database:/docker-entrypoint-initdb.d/
+    #     networks:
+    #       - integration-test
 services:
-  it_tests:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.test
-    volumes:
-      - $PWD:/go/src/target
-    depends_on:
-      - db
-    networks:
-      - integration-test
   db:
     image: postgres:12.12
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: go-example-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: peem2544
+      POSTGRES_DB: PostgresDemo
     restart: on-failure
     volumes:
       - ./database:/docker-entrypoint-initdb.d/
     networks:
       - integration-test
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 3s #The time between each health check execution
+      timeout: 10s #The maximum time allowed for a single health check execution
+      retries: 5
+
+  it_tests:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.test
+    volumes:
+      - .:/go/src/target
+    container_name: expenses-gin-test
+    env_file:
+      - ./env/server.env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - integration-test
+    ports:
+      - "2565:2565"
