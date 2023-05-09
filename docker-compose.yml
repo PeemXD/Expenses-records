@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: peem2544
-      POSTGRES_DB: PostgresDemo
+      POSTGRES_DB: expenses
     restart: on-failure
     networks:
       - App
@@ -19,21 +19,23 @@ services:
       interval: 3s #The time between each health check execution
       timeout: 10s #The maximum time allowed for a single health check execution
       retries: 5
-
-  backend:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    container_name: expenses-gin
-    env_file:
-      - ./env/server.env
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - App
     ports:
-      - "2565:2565"
+      - "5432:5432"
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   container_name: expenses-gin
+  #   env_file:
+  #     - ./env/server.env
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   networks:
+  #     - App
+  #   ports:
+  #     - "2565:2565"
   # pgadmin:
   #   image: dpage/pgadmin4
   #   container_name: pgadmin4

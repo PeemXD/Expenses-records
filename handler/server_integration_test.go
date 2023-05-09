@@ -17,6 +17,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var AUTH_TOKEN string
+
 type Login struct {
 	Token string `json:"token"`
 }
@@ -48,7 +50,7 @@ func loginAuth() string {
 
 func request(method, url string, body io.Reader) *Response {
 	req, _ := http.NewRequest(method, url, body)
-	// authToken := loginAuth()
+
 	req.Header.Add("Authorization", os.Getenv("AUTH_TOKEN"))
 	req.Header.Add("Content-Type", "application/json")
 	client := http.Client{}

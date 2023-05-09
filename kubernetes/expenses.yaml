@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expenses-env
+data:
+  POSTGRESQL_URL: "postgres://postgres:peem2544@localhost:5432/expenses"
+  PORT: "2565"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expenses-service
+spec:
+  selector:
+    app: expenses
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 2565
+      targetPort: 2565
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expenses-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expenses
+  template:
+    metadata:
+      labels:
+        app: expenses
+    spec:
+      containers:
+      - name: expenses
+        image: error074xd/expenses:latest
+        env:
+          - name: POSTGRESQL_URL
+            valueFrom:
+              configMapKeyRef:
+                name: expenses-env
+                key: POSTGRESQL_URL
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: expenses-env
+                key: PORT
+    

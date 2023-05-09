@@ -24,4 +24,5 @@ $env:CGO_ENABLED=0; $env:AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleH
 # test docker-compose sandbox
 
 $env:CGO_ENABLED=0; docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from it_tests
+
 ! not work because i don't know how to set AUTH_TOKEN
